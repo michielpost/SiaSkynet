@@ -23,5 +23,8 @@ namespace SiaSkynet
 
         [Get("{skylink}")]
         Task<HttpResponseMessage> GetFileAsHttpResponseMessage([Path]string skylink);
+
+        [Head("{skylink}")]
+        Task<HttpResponseMessage> GetFileHeadersAsHttpResponseMessage([Path]string skylink);
     }
 }

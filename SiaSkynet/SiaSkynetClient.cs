@@ -12,15 +12,15 @@ namespace SiaSkynet
     {
         private const string apiBaseUrl = "https://siasky.net/";
 
-        private ISiaSkynetApi _client;
+        private ISiaSkynetApi _api;
 
         public SiaSkynetClient(string baseUrl = apiBaseUrl)
         {
-            _client = SiaSkynetClient.GetClient(baseUrl);
+            _api = GetApi(baseUrl);
 
         }
 
-        private static ISiaSkynetApi GetClient(string baseUrl)
+        public ISiaSkynetApi GetApi(string baseUrl = apiBaseUrl)
         {
             var nbApi = new RestClient(baseUrl)
             {
@@ -39,17 +39,17 @@ namespace SiaSkynet
         {
             string extensions = Path.GetExtension(fileName);
             var contentType = new MediaTypeHeaderValue(MimeTypeMap.GetMimeType(extensions));
-            return _client.UploadFile(contentType, fileName, file);
+            return _api.UploadFile(contentType, fileName, file);
         }
 
         public Task<Stream> DownloadFileAsStreamAsync(string skylink)
         {
-            return _client.GetFileAsStream(skylink);
+            return _api.GetFileAsStream(skylink);
         }
 
         public async Task<string> DownloadFileAsStringAsync(string skylink)
         {
-            using (var httpResult = await _client.GetFileAsHttpResponseMessage(skylink))
+            using (var httpResult = await _api.GetFileAsHttpResponseMessage(skylink))
             {
                 string result = await httpResult.Content.ReadAsStringAsync();
                 return result;
