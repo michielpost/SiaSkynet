@@ -17,4 +17,10 @@
     <ProjectReference Include="..\SiaSkyNet\SiaSkynet.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
