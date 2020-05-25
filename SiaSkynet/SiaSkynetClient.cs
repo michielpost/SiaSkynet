@@ -1,7 +1,7 @@
 ﻿using RestEase;
 using System;
 
-namespace SiaSkyNet
+namespace SiaSkynet
 {
     public class SiaSkynetClient
     {
