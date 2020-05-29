@@ -1,8 +1,11 @@
 ﻿using MimeTypes;
+using Newtonsoft.Json;
 using RestEase;
 using SiaSkynet.Responses;
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -47,12 +50,44 @@ namespace SiaSkynet
             return _api.GetFileAsStream(skylink);
         }
 
-        public async Task<string> DownloadFileAsStringAsync(string skylink)
+        public async Task<(string file, string contentType, SkynetFileMetadata metadata)> DownloadFileAsStringAsync(string skylink)
         {
             using (var httpResult = await _api.GetFileAsHttpResponseMessage(skylink))
             {
-                string result = await httpResult.Content.ReadAsStringAsync();
-                return result;
+                string file = await httpResult.Content.ReadAsStringAsync();
+
+                ReadFileHeaders(httpResult, out string contentType, out SkynetFileMetadata metadata);
+
+                return (file, contentType, metadata);
+            }
+        }
+
+        public async Task<(byte[] file, string contentType, SkynetFileMetadata metadata)> DownloadFileAsByteArrayAsync(string skylink)
+        {
+            using (var httpResult = await _api.GetFileAsHttpResponseMessage(skylink))
+            {
+                byte[] file = await httpResult.Content.ReadAsByteArrayAsync();
+
+                ReadFileHeaders(httpResult, out string contentType, out SkynetFileMetadata metadata);
+
+                return (file, contentType, metadata);
+            }
+        }
+
+        private static void ReadFileHeaders(HttpResponseMessage httpResult, out string contentType, out SkynetFileMetadata metadata)
+        {
+            string headerKey = "Skynet-File-Metadata";
+
+            contentType = httpResult.Content.Headers.ContentType.MediaType;
+
+            if (httpResult.Headers.Contains(headerKey))
+            {
+                string metadataJson = httpResult.Headers.GetValues(headerKey).FirstOrDefault();
+                metadata = JsonConvert.DeserializeObject<SkynetFileMetadata>(metadataJson);
+            }
+            else
+            {
+                metadata = new SkynetFileMetadata();
             }
         }
     }

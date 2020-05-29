@@ -33,6 +33,12 @@ using (var response = await _client.DownloadFileAsStreamAsync(skylink))
 }
 ```
 
+Use these methods if you also want the original filename and content type.
+```cs
+_client.DownloadFileAsStringAsync(skylink);
+_client.DownloadFileAsByteArrayAsync(skylink);
+```
+
 
 ## Reference
 - https://siasky.net
