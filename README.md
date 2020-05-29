@@ -6,6 +6,11 @@ Upload and download files from Sia Skynet
 ## How to use
 See included test project.
 
+Initialize the client
+```cs
+var _client = new SiaSkynetClient();
+```
+
 Upload a file
 ```cs
 string fileName = "test.txt";
