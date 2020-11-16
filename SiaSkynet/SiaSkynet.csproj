@@ -10,7 +10,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Company>Q42</Company>
     <Authors>Michiel Post</Authors>
-    <Version>0.0.2</Version>
+    <Version>1.0.1</Version>
     <Product>Sia Skynet Client</Product>
     <PackageProjectUrl>https://github.com/michielpost/SiaSkynet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/michielpost/SiaSkynet</RepositoryUrl>
