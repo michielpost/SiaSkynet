@@ -1,4 +1,5 @@
 ﻿using RestEase;
+using SiaSkynet.Requests;
 using SiaSkynet.Responses;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SiaSkynet
@@ -26,5 +28,11 @@ namespace SiaSkynet
 
         [Head("{skylink}")]
         Task<HttpResponseMessage> GetFileHeadersAsHttpResponseMessage([Path]string skylink);
+
+        [Post("skynet/registry")]
+        Task<HttpResponseMessage> SetRegistry([Body] SetRegistryRequest req);
+
+        [Get("skynet/registry")]
+        Task<GetRegistryResponse> GetRegistry([Query]string publickey, [Query]string datakey, CancellationToken cancellationToken);
     }
 }
