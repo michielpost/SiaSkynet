@@ -102,7 +102,7 @@ namespace SiaSkynet.Tests
         }
 
         [TestMethod]
-        public async Task TestSkyDbUpdate()
+        public async Task TestSkyDbUpdateSimple()
         {
             var key = await SiaSkynetClient.GenerateKeys("my private key seed");
 

@@ -1,9 +1,6 @@
 ﻿using Ed25519;
-using Isopoh.Cryptography.Blake2b;
-using Isopoh.Cryptography.SecureArray;
 using MimeTypes;
 using Newtonsoft.Json;
-using P3.Ed25519.HdKey;
 using RestEase;
 using SiaSkynet.Requests;
 using SiaSkynet.Responses;
@@ -12,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -83,14 +81,23 @@ namespace SiaSkynet
 
         public static async Task<(byte[] privateKey, byte[] publicKey)> GenerateKeys(string seed)
         {
-            var privateKey = Ed25519HdKey.GetMasterKeyFromSeed(Encoding.UTF8.GetBytes(seed));
-            var publicKey = Ed25519HdKey.GetPublicKey(privateKey.Key, withZeroByte: false);
+            var privateKey = GetMasterKeyFromSeed(Encoding.UTF8.GetBytes(seed));
+            var publicKey = await privateKey.ExtractPublicKeyAsync();
 
             if (publicKey == null)
                 throw new Exception("Failed to generate public key");
 
-            return (privateKey.Key, publicKey);
+            return (privateKey, publicKey);
         }
+
+        private static byte[] GetMasterKeyFromSeed(ReadOnlySpan<byte> seed)
+        {
+            SHA256Managed hasher = new SHA256Managed();
+            byte[] keyBytes = hasher.ComputeHash(seed.ToArray());
+            var i = keyBytes.AsSpan();
+            return i.Slice(0, 32).ToArray();
+        }
+
 
         public async Task<bool> UpdateRegistry(byte[] privateKey, byte[] publicKey, string dataKey, string data)
         {

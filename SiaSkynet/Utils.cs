@@ -1,6 +1,4 @@
 ﻿using Ed25519;
-using Isopoh.Cryptography.Blake2b;
-using Isopoh.Cryptography.SecureArray;
 using SiaSkynet.Responses;
 using System;
 using System.Collections.Generic;
