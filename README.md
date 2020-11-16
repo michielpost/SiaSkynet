@@ -1,7 +1,9 @@
 # SiaSkyNet
 Sia Skynet client
 
-Upload and download files from Sia Skynet
+- Upload and download files from Sia Skynet.
+- Interact with the registry
+- Use SkyDB
 
 ## How to use
 See included test project.
@@ -39,6 +41,19 @@ _client.DownloadFileAsStringAsync(skylink);
 _client.DownloadFileAsByteArrayAsync(skylink);
 ```
 
+### SkyDB
+Support for SkyDB
+https://siasky.net/docs/#skydb
+
+```cs
+var key = await SiaSkynetClient.GenerateKeys("my private key seed");
+
+var success = await _client.SkyDbSet(key.privateKey, key.publicKey, "datakey", "data");
+
+string result = await _client.SkyDbGetAsString(key.publicKey, "datakey");
+
+Assert.AreEqual("data", result);
+```
 
 ## Reference
 - https://siasky.net
