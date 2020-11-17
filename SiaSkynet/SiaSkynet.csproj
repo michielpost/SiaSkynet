@@ -8,7 +8,6 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Company>Q42</Company>
     <Authors>Michiel Post</Authors>
     <Version>1.0.1</Version>
     <Product>Sia Skynet Client</Product>

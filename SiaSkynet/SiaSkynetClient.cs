@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace SiaSkynet
 {
+    /// <summary>
+    /// Client to interact with Skynet
+    /// </summary>
     public class SiaSkynetClient
     {
         private const string apiBaseUrl = "https://siasky.net/";
@@ -43,6 +46,12 @@ namespace SiaSkynet
             return nbApi;
         }
 
+        /// <summary>
+        /// Upload a file
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public Task<SkyfileResponse> UploadFileAsync(string fileName, Stream file)
         {
             string extensions = Path.GetExtension(fileName);
@@ -50,11 +59,21 @@ namespace SiaSkynet
             return _api.UploadFile(contentType, fileName, file);
         }
 
+        /// <summary>
+        /// Download a file as a stream
+        /// </summary>
+        /// <param name="skylink"></param>
+        /// <returns></returns>
         public Task<Stream> DownloadFileAsStreamAsync(string skylink)
         {
             return _api.GetFileAsStream(skylink);
         }
 
+        /// <summary>
+        /// Download file as string, with contentType and metadata
+        /// </summary>
+        /// <param name="skylink"></param>
+        /// <returns></returns>
         public async Task<(string file, string? contentType, SkynetFileMetadata metadata)> DownloadFileAsStringAsync(string skylink)
         {
             using (var httpResult = await _api.GetFileAsHttpResponseMessage(skylink))
@@ -67,6 +86,11 @@ namespace SiaSkynet
             }
         }
 
+        /// <summary>
+        /// Download file as byte array, with contentType and metadata
+        /// </summary>
+        /// <param name="skylink"></param>
+        /// <returns></returns>
         public async Task<(byte[] file, string? contentType, SkynetFileMetadata metadata)> DownloadFileAsByteArrayAsync(string skylink)
         {
             using (var httpResult = await _api.GetFileAsHttpResponseMessage(skylink))
@@ -79,6 +103,11 @@ namespace SiaSkynet
             }
         }
 
+        /// <summary>
+        /// Generates a predicatable key pair based on the seed
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
         public static async Task<(byte[] privateKey, byte[] publicKey)> GenerateKeys(string seed)
         {
             var privateKey = GetMasterKeyFromSeed(Encoding.UTF8.GetBytes(seed));
@@ -90,33 +119,27 @@ namespace SiaSkynet
             return (privateKey, publicKey);
         }
 
-        private static byte[] GetMasterKeyFromSeed(ReadOnlySpan<byte> seed)
+        /// <summary>
+        /// Generate a private key
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        private static byte[] GetMasterKeyFromSeed(byte[] seed)
         {
             SHA256Managed hasher = new SHA256Managed();
-            byte[] keyBytes = hasher.ComputeHash(seed.ToArray());
+            byte[] keyBytes = hasher.ComputeHash(seed);
             var i = keyBytes.AsSpan();
             return i.Slice(0, 32).ToArray();
         }
 
-
-        public async Task<bool> UpdateRegistry(byte[] privateKey, byte[] publicKey, string dataKey, string data)
-        {
-            //Get current document
-            var current = await GetRegistry(publicKey, dataKey);
-            if (current == null)
-                current = new RegistryEntry
-                {
-                    Key = dataKey
-                };
-            else
-                current.Revision += 1;
-
-            current.SetData(data);
-
-            //Set new version
-            return await SetRegistry(privateKey, publicKey, current);
-        }
-
+        /// <summary>
+        /// Save string data to SkyDB
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <param name="publicKey"></param>
+        /// <param name="dataKey"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, string dataKey, string data)
         {
             return SkyDbSet(privateKey, publicKey, dataKey, Encoding.UTF8.GetBytes(data));
@@ -144,6 +167,12 @@ namespace SiaSkynet
             }
         }
 
+        /// <summary>
+        /// Get SkyDB data as string
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <param name="dataKey"></param>
+        /// <returns></returns>
         public async Task<string?> SkyDbGetAsString(byte[] publicKey, string dataKey)
         {
             var result = await this.SkyDbGet(publicKey, dataKey);
@@ -153,6 +182,12 @@ namespace SiaSkynet
             return Encoding.UTF8.GetString(result.Value.file);
         }
 
+        /// <summary>
+        /// Get SkyDB data based on a key
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <param name="dataKey"></param>
+        /// <returns></returns>
         public async Task<(byte[] file, string? contentType, SkynetFileMetadata metadata)?> SkyDbGet(byte[] publicKey, string dataKey)
         {
             var regEntry = await GetRegistry(publicKey, dataKey);
@@ -164,7 +199,13 @@ namespace SiaSkynet
             return await this.DownloadFileAsByteArrayAsync(regEntry.GetDataAsString());
         }
 
-
+        /// <summary>
+        /// Save data to the Skynet Registry
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <param name="publicKey"></param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         public async Task<bool> SetRegistry(byte[] privateKey, byte[] publicKey, RegistryEntry entry)
         {
             string hexPublicKey = BitConverter.ToString(publicKey).Replace("-", "");
@@ -183,6 +224,13 @@ namespace SiaSkynet
 
         }
 
+        /// <summary>
+        /// Get data from the skynet registry
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <param name="dataKey"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<RegistryEntry?> GetRegistry(byte[] publicKey, string dataKey, CancellationToken? cancellationToken = null)
         {
             var entry = new RegistryEntry() { Key = dataKey };
@@ -195,8 +243,6 @@ namespace SiaSkynet
                 cancellationToken = cts.Token;
             }
 
-            //Get it back
-            //var r = await _api.GetRegistry(hexPublicKey, hexDataKey);
             try
             {
                 var response = await _api.GetRegistry("ed25519:" + hexPublicKey, entry.GetHexKey(), cancellationToken.Value);
@@ -218,7 +264,39 @@ namespace SiaSkynet
             }
         }
 
+        /// <summary>
+        /// Update skynet registry entry
+        /// Gets the current version, updates the revision and stores the new data
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <param name="publicKey"></param>
+        /// <param name="dataKey"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateRegistry(byte[] privateKey, byte[] publicKey, string dataKey, string data)
+        {
+            //Get current document
+            var current = await GetRegistry(publicKey, dataKey);
+            if (current == null)
+                current = new RegistryEntry
+                {
+                    Key = dataKey
+                };
+            else
+                current.Revision += 1;
 
+            current.SetData(data);
+
+            //Set new version
+            return await SetRegistry(privateKey, publicKey, current);
+        }
+
+        /// <summary>
+        /// Read file headers from skynet file
+        /// </summary>
+        /// <param name="httpResult"></param>
+        /// <param name="contentType"></param>
+        /// <param name="metadata"></param>
         private static void ReadFileHeaders(HttpResponseMessage httpResult, out string? contentType, out SkynetFileMetadata metadata)
         {
             string headerKey = "Skynet-File-Metadata";

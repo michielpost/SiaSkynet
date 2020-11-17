@@ -55,6 +55,12 @@ string result = await _client.SkyDbGetAsString(key.publicKey, "datakey");
 Assert.AreEqual("data", result);
 ```
 
+### Registry
+SkyDB uses the Skynet Registry, it's also possible to interact with the registry using API's:
+- `siaSkynetClient.GetRegistry` 
+- `siaSkynetClient.SetRegistry` 
+- `siaSkynetClient.UpdateRegistry` which performs a get and a set with a new revision number
+
 ## Reference
 - https://siasky.net
 - https://sia.tech/docs/#skynet

@@ -10,6 +10,11 @@ namespace SiaSkynet
 {
     public static class Utils
     {
+        /// <summary>
+        /// Encode string for Skynet Registry
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static byte[] EncodeString(string data)
         {
             byte[] encodedDataLength = BitConverter.GetBytes(data.Length);
@@ -26,14 +31,6 @@ namespace SiaSkynet
             return totalEncodedData;
         }
 
-        //public static string ByteArrayToString(byte[] ba)
-        //{
-        //    StringBuilder hex = new StringBuilder(ba.Length * 2);
-        //    foreach (byte b in ba)
-        //        hex.AppendFormat("{0:x2}", b);
-        //    return hex.ToString();
-        //}
-
         public static byte[] HexStringToByteArray(string hex)
         {
             int NumberChars = hex.Length;
@@ -45,8 +42,6 @@ namespace SiaSkynet
 
         public static async Task<byte[]> Sign(this RegistryEntry entry, byte[] privateKey, byte[] publicKey)
         {
-            string hexPublicKey = BitConverter.ToString(publicKey).Replace("-", "");
-
             var hashAll = entry.GetFullHash();
 
             var signature = await Signer.SignAsync(hashAll, privateKey, publicKey);
