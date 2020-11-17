@@ -1,5 +1,4 @@
-﻿using Ed25519;
-using SiaSkynet.Responses;
+﻿using SiaSkynet.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +43,7 @@ namespace SiaSkynet
         {
             var hashAll = entry.GetFullHash();
 
-            var signature = await Signer.SignAsync(hashAll, privateKey, publicKey);
+            var signature = Chaos.NaCl.Ed25519.Sign(hashAll, privateKey);
             //var validationResult = await Signer.ValidateAsync(signature, hashAll, publicKey);
 
             return signature;

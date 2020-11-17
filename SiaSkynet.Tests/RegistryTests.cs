@@ -20,9 +20,10 @@ namespace SiaSkynet.Tests
         }
 
         [TestMethod]
-        public async Task TestKeys()
+        public void TestKeys()
         {
-            var key = await SiaSkynetClient.GenerateKeys(_testSeed);
+            var key = SiaSkynetClient.GenerateKeys(_testSeed);
+            var key2 = SiaSkynetClient.GenerateKeys(_testSeed);
 
             Assert.IsNotNull(key.publicKey);
         }
@@ -34,7 +35,7 @@ namespace SiaSkynet.Tests
             int revision = 0;
             string data = "IADUs8d9CQjUO34LmdaaNPK_STuZo24rpKVfYW3wPPM2uQ"; //Sia logo
 
-            var key = await SiaSkynetClient.GenerateKeys(_testSeed);
+            var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
             RegistryEntry reg = new RegistryEntry();
             reg.Key = dataKey;
@@ -49,7 +50,7 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public async Task TestGetRegistry()
         {
-            var key = await SiaSkynetClient.GenerateKeys(_testSeed);
+            var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
             string dataKey = "t3";
 
@@ -63,7 +64,7 @@ namespace SiaSkynet.Tests
         public async Task TestRegistryUpdate()
         {
             string dataKey = "regtest";
-            var key = await SiaSkynetClient.GenerateKeys(_testSeed);
+            var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
             var success = await _client.UpdateRegistry(key.privateKey, key.publicKey, dataKey, "update1");
             await Task.Delay(TimeSpan.FromSeconds(5));
@@ -84,7 +85,7 @@ namespace SiaSkynet.Tests
         public async Task TestSkyDbUpdate()
         {
             string dataKey = "skydbtest";
-            var key = await SiaSkynetClient.GenerateKeys(_testSeed);
+            var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
             var success = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, "update1");
             await Task.Delay(TimeSpan.FromSeconds(5));
@@ -104,12 +105,13 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public async Task TestSkyDbUpdateSimple()
         {
-            var key = await SiaSkynetClient.GenerateKeys("my private key seed");
+            var key = SiaSkynetClient.GenerateKeys("my private key seed");
 
             var success = await _client.SkyDbSet(key.privateKey, key.publicKey, "datakey", "data");
 
             string result = await _client.SkyDbGetAsString(key.publicKey, "datakey");
 
+            Assert.IsTrue(success);
             Assert.AreEqual("data", result);
 
         }

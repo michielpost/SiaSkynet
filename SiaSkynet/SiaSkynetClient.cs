@@ -1,5 +1,4 @@
-﻿using dotnetstandard_bip32;
-using MimeTypes;
+﻿using MimeTypes;
 using Newtonsoft.Json;
 using RestEase;
 using SiaSkynet.Requests;
@@ -108,11 +107,10 @@ namespace SiaSkynet
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        public static async Task<(byte[] privateKey, byte[] publicKey)> GenerateKeys(string seed)
+        public static (byte[] privateKey, byte[] publicKey) GenerateKeys(string seed)
         {
-            var privateKey = GetMasterKeyFromSeed(Encoding.UTF8.GetBytes(seed));
-            BIP32 bip32 = new BIP32();
-            var publicKey = bip32.GetPublicKey(privateKey, withZeroByte: false);
+            var masterKey = GetMasterKeyFromSeed(Encoding.UTF8.GetBytes(seed));
+            Chaos.NaCl.Ed25519.KeyPairFromSeed(out byte[] publicKey, out byte[] privateKey, masterKey);
 
             if (publicKey == null)
                 throw new Exception("Failed to generate public key");
