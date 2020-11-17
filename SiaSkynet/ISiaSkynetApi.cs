@@ -33,6 +33,6 @@ namespace SiaSkynet
         Task<HttpResponseMessage> SetRegistry([Body] SetRegistryRequest req);
 
         [Get("skynet/registry")]
-        Task<GetRegistryResponse> GetRegistry([Query]string publickey, [Query]string datakey, CancellationToken cancellationToken);
+        Task<GetRegistryResponse> GetRegistry([Query]string publickey, [Query]string datakey);
     }
 }

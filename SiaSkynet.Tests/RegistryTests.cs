@@ -105,14 +105,15 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public async Task TestSkyDbUpdateSimple()
         {
+            string newData = Guid.NewGuid().ToString();
             var key = SiaSkynetClient.GenerateKeys("my private key seed");
 
-            var success = await _client.SkyDbSet(key.privateKey, key.publicKey, "datakey", "data");
+            var success = await _client.SkyDbSet(key.privateKey, key.publicKey, "datakey", newData);
 
             string result = await _client.SkyDbGetAsString(key.publicKey, "datakey");
 
             Assert.IsTrue(success);
-            Assert.AreEqual("data", result);
+            Assert.AreEqual(newData, result);
 
         }
 
