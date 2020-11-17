@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Ed25519" Version="1.0.0" />
+    <PackageReference Include="dotnetstandard-bip32" Version="1.0.0" />
     <PackageReference Include="Isopoh.Cryptography.Blake2b" Version="1.1.9" />
     <PackageReference Include="MediaTypeMap.Core" Version="2.3.3" />
     <PackageReference Include="RestEase" Version="1.4.12" />
