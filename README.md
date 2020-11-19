@@ -10,7 +10,7 @@ One of the most exciting features is the full compatibility with [Blazor WebAsse
 
 Combining the large **C#** ecosystem with the power of **SkyDB** and the speed of **WebAssembly** makes this solution ready for a decentralized  future!
 
-**NOTE:** The sample app only gives a basic demonstrations of what's possible with this new SDK. The *SDK itself* is the submission for the hackathon, not the app.
+**NOTE:** The sample app only gives a basic demonstration of what's possible with this new SDK. The *SDK itself* is the submission to the hackathon, not the app.
 
 Try out the sample: https://siasky.net/FAC82APHRUPV5_G2iNW1Qi_FcM3zwatoPvSFqnGCBRp5qw
 
