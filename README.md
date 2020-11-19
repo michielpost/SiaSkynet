@@ -11,6 +11,10 @@ One of the most exciting features is the full compatibility with [Blazor WebAsse
 
 Combining the large **C#** ecosystem with the power of **SkyDB** and the speed of **WebAssembly** makes this solution ready for a decentralized  future!
 
+Try out the sample: https://siasky.net/FAC82APHRUPV5_G2iNW1Qi_FcM3zwatoPvSFqnGCBRp5qw
+
+Video demo: https://siasky.net/AADKNi9ltyZ9yjxk3xpfrJeXBfjhpdSlUeFBCEMXa7hyaw
+
 ---
 
 Sia Skynet client
@@ -20,7 +24,9 @@ Sia Skynet client
 - Use SkyDB
 
 ## How to use
-See included test project.
+See included test project and Blazor sample app.
+
+Install: [SiaSkynet on NuGet](https://www.nuget.org/packages/SiaSkynet/)
 
 Initialize the client
 ```cs
