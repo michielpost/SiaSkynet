@@ -1,7 +1,6 @@
-# SiaSkyNet
+# SiaSkynet C# SDK
 
 The SkyDB part of this library was created for *[The SkyDB Debut](https://gitcoin.co/hackathon/skydb/)* hackathon.
-
 
 SkyDB gives you access to key value storage on Sia Skynet. For the hackathon, a JavaScript SDK was provided to interact with SkyDB. 
 
@@ -10,6 +9,8 @@ This new library enables all C# developers in the world to use SkyDB.
 One of the most exciting features is the full compatibility with [Blazor WebAssembly](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor). Blazor allows you to create C# apps and run them entirely in the browser using WebAssembly. The app can then be uploaded to Skynet for hosting.
 
 Combining the large **C#** ecosystem with the power of **SkyDB** and the speed of **WebAssembly** makes this solution ready for a decentralized  future!
+
+**NOTE:** The sample app only gives a basic demonstrations of what's possible with this new SDK. The *SDK itself* is the submission for the hackathon, not the app.
 
 Try out the sample: https://siasky.net/FAC82APHRUPV5_G2iNW1Qi_FcM3zwatoPvSFqnGCBRp5qw
 
