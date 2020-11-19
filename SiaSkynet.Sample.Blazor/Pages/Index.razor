@@ -1,0 +1,121 @@
+﻿@page "/"
+@using SiaSkynet;
+
+<h1>Sia Skynet Blazor Sample App</h1>
+<p>
+    This sample app demonstrates the use of SkyDB in a Blazor WebAssembly app written in C#. <br />
+    It runs entirely in the browser and can be deployed to <a href="https://siasky.net/" target="_blank">Skynet</a>.
+</p>
+
+<p>
+    First step is to get a public/private key pair, we can generate these based on a seed phrase.
+    <br />
+    The same seed phrase always generates the same key pair, so you can login and get back to your own data.
+    <br />
+    <br />
+    <input value="@seedPhrase" placeholder="Enter seed phrase..." @oninput="(EventArgs) => {SetSeedPhraseValue(EventArgs.Value.ToString());}" />
+    <button class="btn btn-primary" @onclick="InitKeys">Initialize keys</button>
+
+</p>
+
+@if (publicKey != null)
+{
+    <h2>Write values to SkyDB</h2>
+    <p>
+        We can now write values to SkyDB. <br />
+        Write anything in the textarea below and press the button to store the data on SkyDB.
+        <br />
+        <textarea value="@documentText" placeholder="Enter some text..." @oninput="(EventArgs) => {SetDocumentTextValue(EventArgs.Value.ToString());}" />
+        <br />
+        @if (!saving)
+        {
+            <button class="btn btn-primary" @onclick="SaveData">Save text to SkyDB</button>
+        }
+        else
+        {
+            <span>Saving data to Skynet...</span>
+        }
+
+        @if (!success)
+        {
+            <br />
+            <span>Something went wrong, please check your connection to siasky.net</span>
+        }
+        <br />
+        <br />
+        The text is saved as a Skynet document, this document is immutable. When changing the text, it will result in a new Skynet document. The SkyDB entry is updated with a link to that document, so that it's possible to load the latest version of the document.
+    </p>
+
+    <h2>Read values from SkyDB</h2>
+    <p>
+        Of course it's also possible to read the saved text. <br />
+        <br />
+        @if (!loading)
+        {
+            <button class="btn btn-primary" @onclick="LoadData">Load text from SkyDB</button>
+        }
+        else
+        {
+            <span>Loading data from Skynet...</span>
+        }
+
+        <br />
+        <br />
+        @if (!string.IsNullOrEmpty(loadedDocumentText))
+        {
+            <span>Text from Skynet:</span><br />
+            <span>@loadedDocumentText</span>
+            <br />
+            <br />
+            <span>Change the text, save and load again to see your changes.</span>
+        }
+    </p>
+}
+
+@code
+{
+
+    SiaSkynetClient client = new SiaSkynetClient();
+
+    string seedPhrase = "";
+    string documentText = "";
+    string loadedDocumentText = "";
+    string dataKey = "blazor-sample";
+    bool saving = false;
+    bool loading = false;
+    bool success = true;
+    byte[]? privateKey;
+    byte[]? publicKey;
+
+    private void SetSeedPhraseValue(string Value)
+    {
+        seedPhrase = Value;
+    }
+
+    private void SetDocumentTextValue(string Value)
+    {
+        documentText = Value;
+    }
+
+    private void InitKeys()
+    {
+        var key = SiaSkynetClient.GenerateKeys(seedPhrase);
+        privateKey = key.privateKey;
+        publicKey = key.publicKey;
+    }
+
+    private async Task SaveData()
+    {
+        saving = true;
+        success = await client.SkyDbSet(privateKey, publicKey, dataKey, documentText);
+        saving = false;
+
+    }
+
+    private async Task LoadData()
+    {
+        loading = true;
+        loadedDocumentText = await client.SkyDbGetAsString(publicKey, dataKey, TimeSpan.FromSeconds(10));
+        loading = false;
+    }
+}
