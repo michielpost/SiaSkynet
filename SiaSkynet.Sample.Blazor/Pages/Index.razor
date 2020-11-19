@@ -4,6 +4,7 @@
 <h1>Sia Skynet Blazor Sample App</h1>
 <p>
     This sample app demonstrates the use of SkyDB in a Blazor WebAssembly app written in C#. <br />
+    It uses the <a href="https://github.com/michielpost/SiaSkynet" target="_blank">SiaSkynet library</a> created by Michiel Post. <br />
     It runs entirely in the browser and can be deployed to <a href="https://siasky.net/" target="_blank">Skynet</a>.
 </p>
 
@@ -25,7 +26,7 @@
         We can now write values to SkyDB. <br />
         Write anything in the textarea below and press the button to store the data on SkyDB.
         <br />
-        <textarea value="@documentText" placeholder="Enter some text..." @oninput="(EventArgs) => {SetDocumentTextValue(EventArgs.Value.ToString());}" />
+        <textarea value="@documentText" rows="7" cols="70" placeholder="Enter some text..." @oninput="(EventArgs) => {SetDocumentTextValue(EventArgs.Value.ToString());}" />
         <br />
         @if (!saving)
         {

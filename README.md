@@ -1,4 +1,18 @@
 # SiaSkyNet
+
+The SkyDB part of this library was created for *[The SkyDB Debut](https://gitcoin.co/hackathon/skydb/)* hackathon.
+
+
+SkyDB gives you access to key value storage on Sia Skynet. For the hackathon, a JavaScript SDK was provided to interact with SkyDB. 
+
+This new library enables all C# developers in the world to use SkyDB. 
+
+One of the most exciting features is the full compatibility with [Blazor WebAssembly](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor). Blazor allows you to create C# apps and run them entirely in the browser using WebAssembly. The app can then be uploaded to Skynet for hosting.
+
+Combining the large **C#** ecosystem with the power of **SkyDB** and the speed of **WebAssembly** makes this solution ready for a decentralized  future!
+
+---
+
 Sia Skynet client
 
 - Upload and download files from Sia Skynet.
@@ -45,6 +59,7 @@ _client.DownloadFileAsByteArrayAsync(skylink);
 Support for SkyDB
 https://siasky.net/docs/#skydb
 
+Set and get values on SkyDB:
 ```cs
 var key = await SiaSkynetClient.GenerateKeys("my private key seed");
 

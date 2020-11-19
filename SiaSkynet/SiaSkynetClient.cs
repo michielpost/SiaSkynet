@@ -109,7 +109,7 @@ namespace SiaSkynet
         /// <returns></returns>
         public static (byte[] privateKey, byte[] publicKey) GenerateKeys(string seed)
         {
-            var masterKey = GetMasterKeyFromSeed(Encoding.UTF8.GetBytes(seed));
+            var masterKey = GetMasterKeyFromSeed(seed);
             Chaos.NaCl.Ed25519.KeyPairFromSeed(out byte[] publicKey, out byte[] privateKey, masterKey);
 
             if (publicKey == null)
@@ -123,10 +123,10 @@ namespace SiaSkynet
         /// </summary>
         /// <param name="seed"></param>
         /// <returns></returns>
-        private static byte[] GetMasterKeyFromSeed(byte[] seed)
+        private static byte[] GetMasterKeyFromSeed(string seed)
         {
             SHA256Managed hasher = new SHA256Managed();
-            byte[] keyBytes = hasher.ComputeHash(seed);
+            byte[] keyBytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(seed));
             var i = keyBytes.AsSpan();
             return i.Slice(0, 32).ToArray();
         }
