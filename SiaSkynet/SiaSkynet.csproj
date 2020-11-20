@@ -9,7 +9,7 @@
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Authors>Michiel Post</Authors>
-    <Version>1.0.1</Version>
+    <Version>2.0.1</Version>
     <Product>Sia Skynet Client</Product>
     <PackageProjectUrl>https://github.com/michielpost/SiaSkynet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/michielpost/SiaSkynet</RepositoryUrl>
