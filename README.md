@@ -89,3 +89,9 @@ SkyDB uses the Skynet Registry, it's also possible to interact with the registry
 ## Reference
 - https://siasky.net
 - https://sia.tech/docs/#skynet
+
+## Apps that use this library:
+Are you using SiaSkynet? Get your app listed here! Edit this page and send a pull request.
+
+- [SkyDocs](https://github.com/michielpost/SkyDocs)
+- [Stresstest and Speedtest by autisticvegan](https://github.com/autisticvegan/siahackathonsubmission)
