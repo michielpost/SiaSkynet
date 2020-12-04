@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject IJSRuntime JS;
 @using SiaSkynet;
 
 <h1>Sia Skynet Blazor Sample App</h1>
@@ -16,6 +17,7 @@
     <br />
     <input value="@seedPhrase" placeholder="Enter seed phrase..." @oninput="(EventArgs) => {SetSeedPhraseValue(EventArgs.Value.ToString());}" />
     <button class="btn btn-primary" @onclick="InitKeys">Initialize keys</button>
+    <button class="btn btn-primary" @onclick="SkyIdLogin">Login with SkyId</button>
 
 </p>
 
@@ -103,6 +105,18 @@
         var key = SiaSkynetClient.GenerateKeys(seedPhrase);
         privateKey = key.privateKey;
         publicKey = key.publicKey;
+    }
+
+    private async Task SkyIdLogin()
+    {
+        await JS.InvokeVoidAsync("skyid.sessionStart");
+    }
+
+    [JSInvokable]
+    public static Task LoginSuccess()
+    {
+        Console.WriteLine("Success from Blazor");
+        return Task.CompletedTask;
     }
 
     private async Task SaveData()
