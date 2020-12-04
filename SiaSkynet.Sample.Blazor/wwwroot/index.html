@@ -44,7 +44,23 @@
         }
 
         var opts = { 'devMode': devMode }
-        var skyid = new SkyID('App name', skyidEventCallback, opts)
+        var skyid = new SkyID('Blazor Sample App', skyidEventCallback, opts)
+        var blazorApp = null;
+
+
+        function skyIdLogin(blazor) {
+            blazorApp = blazor;
+
+            skyid.sessionStart();
+        }
+
+        function checkSkyIdLogin(blazor) {
+            blazorApp = blazor;
+
+            if (skyid.seed) {
+                blazorApp.invokeMethodAsync('LoginSuccess', null, null);
+            }
+        }
 
         function skyidEventCallback(message) {
             switch (message) {
@@ -53,7 +69,7 @@
                     break;
                 case 'login_success':
                     console.log('Login succeed!')
-                    DotNet.invokeMethodAsync('SiaSkynet.Sample.Blazor', 'LoginSuccess')
+                    blazorApp.invokeMethodAsync('LoginSuccess', null, null)
                     break;
                 case 'destroy':
                     console.log('Logout succeed!')

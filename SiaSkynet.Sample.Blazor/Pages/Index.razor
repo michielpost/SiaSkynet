@@ -90,6 +90,13 @@
     byte[]? privateKey;
     byte[]? publicKey;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await CheckSkyIdLogin();
+    }
+
     private void SetSeedPhraseValue(string Value)
     {
         seedPhrase = Value;
@@ -107,16 +114,29 @@
         publicKey = key.publicKey;
     }
 
+    private async Task CheckSkyIdLogin()
+    {
+        await JS.InvokeVoidAsync("checkSkyIdLogin", DotNetObjectReference.Create(this));
+    }
+
     private async Task SkyIdLogin()
     {
-        await JS.InvokeVoidAsync("skyid.sessionStart");
+        await JS.InvokeVoidAsync("skyIdLogin", DotNetObjectReference.Create(this));
     }
 
     [JSInvokable]
-    public static Task LoginSuccess()
+    public void LoginSuccess(byte[] priKey, byte[] pubKey)
     {
-        Console.WriteLine("Success from Blazor");
-        return Task.CompletedTask;
+        Console.WriteLine("Blazor login");
+        privateKey = priKey;
+        publicKey = pubKey;
+
+        //temp test:
+        var key = SiaSkynetClient.GenerateKeys("test123");
+        privateKey = key.privateKey;
+        publicKey = key.publicKey;
+
+        StateHasChanged();
     }
 
     private async Task SaveData()
