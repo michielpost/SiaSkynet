@@ -15,6 +15,7 @@ namespace SiaSkynet
     /// <summary>
     /// Skynet API docs: https://sia.tech/docs/#skynet
     /// </summary>
+    [Header("Cache-Control", "no-cache")]
     public interface ISiaSkynetApi
     {
         [Post("skynet/skyfile")]
