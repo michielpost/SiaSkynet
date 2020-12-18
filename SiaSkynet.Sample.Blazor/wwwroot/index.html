@@ -69,6 +69,7 @@
                     break;
                 case 'login_success':
                     console.log('Login succeed!')
+                    //TODO: Get public and private key, waiting for https://github.com/DaWe35/SkyID/issues/33
                     blazorApp.invokeMethodAsync('LoginSuccess', null, null)
                     break;
                 case 'destroy':
