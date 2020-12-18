@@ -33,6 +33,7 @@ namespace SiaSkynet
         Task<HttpResponseMessage> SetRegistry([Body] SetRegistryRequest req);
 
         [Get("skynet/registry")]
+        [Header("Cache-Control", "no-cache")]
         Task<GetRegistryResponse> GetRegistry([Query]string publickey, [Query]string datakey);
     }
 }
