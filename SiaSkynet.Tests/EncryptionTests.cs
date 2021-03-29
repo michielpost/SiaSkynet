@@ -23,16 +23,13 @@ namespace SiaSkynet.Tests
             var key2 = SiaSkynetClient.GenerateKeys("bar");
 
             var testValue = "this is not encrypted";
-            byte[] nonce = key.privateKey[0..24];
-            byte[] priv = key.privateKey[0..32];
-            byte[] pub = key.publicKey[0..32];
 
-            var encrypted = Chaos.NaCl.XSalsa20Poly1305.Encrypt(System.Text.Encoding.UTF8.GetBytes(testValue), priv, nonce);
+            var encrypted = Utils.Encrypt(System.Text.Encoding.UTF8.GetBytes(testValue), key.privateKey);
             var eString = System.Text.Encoding.UTF8.GetString(encrypted);
             Assert.AreNotEqual(testValue, eString);
 
 
-            var decrypt = Chaos.NaCl.XSalsa20Poly1305.TryDecrypt(encrypted, priv, nonce);
+            var decrypt = Utils.Decrypt(encrypted, key.privateKey);
             var dString = System.Text.Encoding.UTF8.GetString(decrypt);
 
             Assert.AreEqual(testValue, dString);

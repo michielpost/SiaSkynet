@@ -72,6 +72,21 @@
             <span>Change the text, save and load again to see your changes.</span>
         }
     </p>
+
+
+    <h2>Encrypt/Decrypt</h2>
+    <p>
+        Text to encrypt: <br />
+        <textarea value="@encryptText" rows="7" cols="70" placeholder="Enter some text..." @oninput="(EventArgs) => {SetEncryptTextValue(EventArgs.Value.ToString());}" />
+        <button class="btn btn-primary" @onclick="Encrypt">Encrypt</button>
+
+        <br />
+        <br />
+        Text to decrypt: <br />
+        <textarea value="@decryptText" rows="7" cols="70" placeholder="Enter some text..." @oninput="(EventArgs) => {SetDecryptTextValue(EventArgs.Value.ToString());}" />
+        <button class="btn btn-primary" @onclick="Decrypt">Decrypt</button>
+
+    </p>
 }
 
 @code
@@ -80,6 +95,8 @@
 
     string seedPhrase = "";
     string documentText = "";
+    string encryptText = "";
+    string decryptText = "";
     string loadedDocumentText = "";
     string dataKey = "blazor-sample";
     bool saving = false;
@@ -93,10 +110,10 @@
         base.OnInitialized();
 
 #if RELEASE
-        string baseUrl = MyNavigationManager.BaseUri;
-        var uri = new Uri(baseUrl);
-        var portalDomain = $"{uri.Scheme}://{uri.Authority}/";
-        client = new SiaSkynetClient(portalDomain);
+string baseUrl = MyNavigationManager.BaseUri;
+var uri = new Uri(baseUrl);
+var portalDomain = $"{uri.Scheme}://{uri.Authority}/";
+client = new SiaSkynetClient(portalDomain);
 #endif
 
     }
@@ -109,6 +126,16 @@
     private void SetDocumentTextValue(string Value)
     {
         documentText = Value;
+    }
+
+    private void SetEncryptTextValue(string Value)
+    {
+        encryptText = Value;
+    }
+
+    private void SetDecryptTextValue(string Value)
+    {
+        decryptText = Value;
     }
 
     private void InitKeys()
@@ -131,5 +158,22 @@
         loading = true;
         loadedDocumentText = await client.SkyDbGetAsString(publicKey, dataKey, TimeSpan.FromSeconds(10));
         loading = false;
+    }
+
+    private void Encrypt()
+    {
+        var encrypted = Utils.Encrypt(System.Text.Encoding.UTF8.GetBytes(encryptText), privateKey);
+        decryptText = BitConverter.ToString(encrypted).Replace("-", "");
+
+        encryptText = null;
+    }
+
+    private void Decrypt()
+    {
+        var cipherData = Utils.HexStringToByteArray(decryptText);
+        var decrypted = Utils.Decrypt(cipherData, privateKey);
+        encryptText = System.Text.Encoding.UTF8.GetString(decrypted);
+
+        decryptText = null;
     }
 }

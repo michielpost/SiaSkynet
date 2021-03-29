@@ -48,5 +48,21 @@ namespace SiaSkynet
 
             return signature;
         }
+
+        public static byte[] Encrypt(byte[] data, byte[] privateKey)
+        {
+            byte[] nonce = privateKey[0..24];
+            byte[] shortKey = privateKey[0..32];
+
+           return Chaos.NaCl.XSalsa20Poly1305.Encrypt(data, shortKey, nonce);
+        }
+
+        public static byte[] Decrypt(byte[] ciphertext, byte[] privateKey)
+        {
+            byte[] nonce = privateKey[0..24];
+            byte[] shortKey = privateKey[0..32];
+
+            return Chaos.NaCl.XSalsa20Poly1305.TryDecrypt(ciphertext, shortKey, nonce);
+        }
     }
 }
