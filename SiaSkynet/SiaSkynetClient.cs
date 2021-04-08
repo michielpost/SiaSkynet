@@ -212,7 +212,7 @@ namespace SiaSkynet
         {
             string hexPublicKey = BitConverter.ToString(publicKey).Replace("-", "");
 
-            var signature = await entry.Sign(privateKey, publicKey);
+            var signature = entry.Sign(privateKey, publicKey);
 
             SetRegistryRequest req = new SetRegistryRequest();
             req.publickey.key = publicKey.Select(x => (int)x).ToArray();

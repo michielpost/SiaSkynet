@@ -39,7 +39,7 @@ namespace SiaSkynet
             return bytes;
         }
 
-        public static async Task<byte[]> Sign(this RegistryEntry entry, byte[] privateKey, byte[] publicKey)
+        public static byte[] Sign(this RegistryEntry entry, byte[] privateKey, byte[] publicKey)
         {
             var hashAll = entry.GetFullHash();
 
