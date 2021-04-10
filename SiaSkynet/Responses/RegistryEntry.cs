@@ -1,6 +1,4 @@
-﻿using Isopoh.Cryptography.Blake2b;
-using Isopoh.Cryptography.SecureArray;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,7 +43,7 @@ namespace SiaSkynet.Responses
 
         public byte[] GetHashedKey()
         {
-            return Blake2B.ComputeHash(GetEncodedKey(), new Blake2BConfig() { OutputSizeInBytes = 32 }, SecureArray.DefaultCall);
+            return Crypto.HashAll(GetEncodedKey());
         }
 
         public string GetHexKey()
@@ -55,13 +53,7 @@ namespace SiaSkynet.Responses
 
         public byte[] GetFullHash()
         {
-            var hasher = Blake2B.Create(new Blake2BConfig() { OutputSizeInBytes = 32 }, SecureArray.DefaultCall);
-            hasher.Update(GetHashedKey());
-            hasher.Update(GetEncodedData());
-            hasher.Update(GetEncodedRevision());
-            var hashAll = hasher.Finish();
-
-            return hashAll;
+            return Crypto.HashAll(GetHashedKey(), GetEncodedData(), GetEncodedRevision());
         }
     }
 }

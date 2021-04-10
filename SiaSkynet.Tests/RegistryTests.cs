@@ -31,7 +31,7 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public async Task TestSetRegistry()
         {
-            string dataKey = "t3";
+            string dataKey = Guid.NewGuid().ToString();
             int revision = 0;
             string data = "IADUs8d9CQjUO34LmdaaNPK_STuZo24rpKVfYW3wPPM2uQ"; //Sia logo
 
