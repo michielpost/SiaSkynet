@@ -37,8 +37,7 @@ namespace SiaSkynet.Tests
 
             var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
-            RegistryEntry reg = new RegistryEntry();
-            reg.Key = dataKey;
+            RegistryEntry reg = new RegistryEntry(dataKey);
             reg.SetData(data);
             reg.Revision = revision;
 

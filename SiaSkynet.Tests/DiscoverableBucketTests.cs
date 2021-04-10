@@ -21,12 +21,12 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public void TestPathToDataKey()
         {
-            var path = "crqa.hns/snew.hns/interactions/index.json";
+            var path = "skyfeed.hns/preferences/ui.json";
             var bucket = new DiscoverableBucket(path);
-            var dataKey = bucket.GetDataKey();
+            var hashKey = bucket.GetHashedKey();
 
-            var entry = new RegistryEntry() { Key = dataKey };
-            var hexKey = entry.GetHexKey();
+            RegistryEntry registry = new RegistryEntry(hashKey);
+            var hexKey = registry.GetHexKey();
 
             Assert.IsNotNull(hexKey);
         }

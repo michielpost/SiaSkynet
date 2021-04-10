@@ -20,12 +20,6 @@ namespace SiaSkynet
             this.pathHashes = paths.Select(x => Crypto.HashAll(Encoding.UTF8.GetBytes(x))).ToArray();
         }
 
-        public string GetDataKey()
-        {
-            var hash = GetHashedKey();
-            return Encoding.UTF8.GetString(hash);
-        }
-
         public byte[] GetHashedKey()
         {
             var encoding = Encode();

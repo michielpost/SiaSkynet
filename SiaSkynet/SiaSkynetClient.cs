@@ -237,7 +237,7 @@ namespace SiaSkynet
         {
             TimeSpan maxWait = timeout ?? TimeSpan.FromSeconds(2);
 
-            var entry = new RegistryEntry() { Key = dataKey };
+            var entry = new RegistryEntry(dataKey);
             string hexPublicKey = BitConverter.ToString(publicKey).Replace("-", "");
 
             var getRegistryTask = _api.GetRegistry("ed25519:" + hexPublicKey, entry.GetHexKey());
@@ -277,10 +277,7 @@ namespace SiaSkynet
             //Get current document
             var current = await GetRegistry(publicKey, dataKey, timeout);
             if (current == null)
-                current = new RegistryEntry
-                {
-                    Key = dataKey
-                };
+                current = new RegistryEntry(dataKey);
             else
                 current.Revision += 1;
 
