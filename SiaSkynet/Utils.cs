@@ -30,6 +30,22 @@ namespace SiaSkynet
             return totalEncodedData;
         }
 
+        public static byte[] EncodeData(byte[] data)
+        {
+            byte[] encodedDataLength = BitConverter.GetBytes(data.Length);
+            Array.Resize(ref encodedDataLength, 8);
+            byte[] encodedData = data;
+            byte[] totalEncodedData = encodedDataLength.Concat(encodedData).ToArray();
+
+            var totalData = 8 + data.Length;
+            if (totalData != totalEncodedData.Length)
+            {
+                throw new Exception("Invalid length");
+            }
+
+            return totalEncodedData;
+        }
+
         public static byte[] HexStringToByteArray(string hex)
         {
             int NumberChars = hex.Length;

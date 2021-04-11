@@ -15,9 +15,9 @@ namespace SiaSkynet.Responses
             encodedKey = Utils.EncodeString(key);
         }
 
-        public RegistryEntry(byte[] encodedKey)
+        public RegistryEntry(byte[] key)
         {
-            this.encodedKey = encodedKey;
+            this.encodedKey = Utils.EncodeData(key);
         }
 
         public int Revision { get; set; } = 0;

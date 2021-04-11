@@ -29,6 +29,16 @@ namespace SiaSkynet.Tests
         }
 
         [TestMethod]
+        public void TestDataKey()
+        {
+            var encodedDK = "7c96a0537ab2aaac9cfe0eca217732f4e10791625b4ab4c17e4d91c8078713b9";
+            RegistryEntry r = new RegistryEntry("app");
+            var hex = r.GetHexKey();
+
+            Assert.AreEqual(encodedDK, hex.ToLowerInvariant());
+        }
+
+        [TestMethod]
         public async Task TestSetRegistry()
         {
             string dataKey = Guid.NewGuid().ToString();

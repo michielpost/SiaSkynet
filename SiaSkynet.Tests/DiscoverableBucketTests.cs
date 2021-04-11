@@ -21,7 +21,10 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public void TestPathToDataKey()
         {
-            var path = "skyfeed.hns/preferences/ui.json";
+            //var path = "skyfeed.hns/preferences/ui.json";
+            //var path = "crqa.hns/snew.hns/123"; 
+            var path = "crqa.hns/snew.hns/newcontent/index.json"; 
+            //var path = "crqa.hns/snew.hns/newcontent/page_0.json";
             var bucket = new DiscoverableBucket(path);
             var hashKey = bucket.GetHashedKey();
 
