@@ -8,16 +8,11 @@ namespace SiaSkynet.Responses
 {
     public class RegistryEntry
     {
-        private readonly byte[] encodedKey;
+        public RegistryKey Key { get; set; }
 
-        public RegistryEntry(string key)
+        public RegistryEntry(RegistryKey key)
         {
-            encodedKey = Utils.EncodeString(key);
-        }
-
-        public RegistryEntry(byte[] key)
-        {
-            this.encodedKey = Utils.EncodeData(key);
+            this.Key = key;
         }
 
         public int Revision { get; set; } = 0;
@@ -47,19 +42,9 @@ namespace SiaSkynet.Responses
             return Utils.EncodeString(dataString);
         }
 
-        public byte[] GetHashedKey()
-        {
-            return Crypto.HashAll(encodedKey);
-        }
-
-        public string GetHexKey()
-        {
-            return BitConverter.ToString(GetHashedKey()).Replace("-", "");
-        }
-
         public byte[] GetFullHash()
         {
-            return Crypto.HashAll(GetHashedKey(), GetEncodedData(), GetEncodedRevision());
+            return Crypto.HashAll(Key.DataKeyBytes, GetEncodedData(), GetEncodedRevision());
         }
     }
 }

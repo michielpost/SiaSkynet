@@ -12,6 +12,7 @@ namespace SiaSkynet.Tests
     public class DiscoverableBucketTests
     {
         private SiaSkynetClient _client;
+        private string _testSeed = "secret password";
 
         public DiscoverableBucketTests()
         {
@@ -25,13 +26,36 @@ namespace SiaSkynet.Tests
             //var path = "crqa.hns/snew.hns/123"; 
             var path = "crqa.hns/snew.hns/newcontent/index.json"; 
             //var path = "crqa.hns/snew.hns/newcontent/page_0.json";
+
             var bucket = new DiscoverableBucket(path);
-            var hashKey = bucket.GetHashedKey();
+            RegistryEntry registry = new RegistryEntry(new RegistryKey(bucket));
 
-            RegistryEntry registry = new RegistryEntry(hashKey);
-            var hexKey = registry.GetHexKey();
-
+            var hexKey = registry.Key.GetHexKey();
             Assert.IsNotNull(hexKey);
+        }
+
+        [TestMethod]
+        public async Task TestSetRegistry_With_DiscoverableBucket()
+        {
+            var path = $"crqa.hns/snew.hns/newcontent/{Guid.NewGuid().ToString()}/index.json";
+            var bucket = new DiscoverableBucket(path);
+            var dataKey = new RegistryKey(bucket);
+
+            int revision = 0;
+            string data = "IADUs8d9CQjUO34LmdaaNPK_STuZo24rpKVfYW3wPPM2uQ"; //Sia logo
+
+            var key = SiaSkynetClient.GenerateKeys(_testSeed);
+
+            RegistryEntry reg = new RegistryEntry(dataKey);
+            reg.SetData(data);
+            reg.Revision = revision;
+
+            var success = await _client.SetRegistry(key.privateKey, key.publicKey, reg);
+
+            Assert.IsTrue(success);
+
+            var result = await _client.GetRegistry(key.publicKey, dataKey);
+            Assert.AreEqual(data, result.GetDataAsString());
         }
 
     }

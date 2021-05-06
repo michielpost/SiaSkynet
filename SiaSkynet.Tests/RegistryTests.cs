@@ -32,8 +32,8 @@ namespace SiaSkynet.Tests
         public void TestDataKey()
         {
             var encodedDK = "7c96a0537ab2aaac9cfe0eca217732f4e10791625b4ab4c17e4d91c8078713b9";
-            RegistryEntry r = new RegistryEntry("app");
-            var hex = r.GetHexKey();
+            RegistryEntry r = new RegistryEntry(new RegistryKey("app"));
+            var hex = r.Key.GetHexKey();
 
             Assert.AreEqual(encodedDK, hex.ToLowerInvariant());
         }
@@ -47,7 +47,7 @@ namespace SiaSkynet.Tests
 
             var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
-            RegistryEntry reg = new RegistryEntry(dataKey);
+            RegistryEntry reg = new RegistryEntry(new RegistryKey(dataKey));
             reg.SetData(data);
             reg.Revision = revision;
 
@@ -61,7 +61,7 @@ namespace SiaSkynet.Tests
         {
             var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
-            string dataKey = "t3";
+            RegistryKey dataKey = new RegistryKey("t3");
 
             var result = await _client.GetRegistry(key.publicKey, dataKey);
 
@@ -72,7 +72,7 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public async Task TestRegistryUpdate()
         {
-            string dataKey = "regtest";
+            RegistryKey dataKey = new RegistryKey("regtest");
             var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
             var success = await _client.UpdateRegistry(key.privateKey, key.publicKey, dataKey, "update1");
@@ -93,7 +93,7 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public async Task TestSkyDbUpdate()
         {
-            string dataKey = "skydbtest";
+            RegistryKey dataKey = new RegistryKey("skydbtest");
             var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
             var success = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, "update1");
@@ -116,10 +116,12 @@ namespace SiaSkynet.Tests
         {
             string newData = Guid.NewGuid().ToString();
             var key = SiaSkynetClient.GenerateKeys("my private key seed");
+            RegistryKey dataKey = new RegistryKey("datakey");
 
-            var success = await _client.SkyDbSet(key.privateKey, key.publicKey, "datakey", newData);
 
-            string result = await _client.SkyDbGetAsString(key.publicKey, "datakey");
+            var success = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, newData);
+
+            string result = await _client.SkyDbGetAsString(key.publicKey, dataKey);
 
             Assert.IsTrue(success);
             Assert.AreEqual(newData, result);

@@ -14,8 +14,11 @@ namespace SiaSkynet
         private readonly int Version = 1;
         private readonly byte[][] pathHashes;
 
+        public string Path { get; init; }
+
         public DiscoverableBucket(string path)
         {
+            this.Path = path;
             var paths = path.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             this.pathHashes = paths.Select(x => Crypto.HashAll(Encoding.UTF8.GetBytes(x))).ToArray();
         }

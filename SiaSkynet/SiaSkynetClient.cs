@@ -139,7 +139,7 @@ namespace SiaSkynet
         /// <param name="dataKey"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, string dataKey, string data)
+        public Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, string data)
         {
             return SkyDbSet(privateKey, publicKey, dataKey, Encoding.UTF8.GetBytes(data));
         }
@@ -153,12 +153,12 @@ namespace SiaSkynet
         /// <param name="data"></param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, string dataKey, byte[] data, TimeSpan? timeout = null)
+        public async Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, byte[] data, TimeSpan? timeout = null)
         {
             using (Stream stream = new MemoryStream(data))
             {
                 //Save data to Skynet file
-                var response = await this.UploadFileAsync(dataKey, stream);
+                var response = await this.UploadFileAsync(dataKey.Key, stream);
 
                 var link = response.Skylink;
 
@@ -174,7 +174,7 @@ namespace SiaSkynet
         /// <param name="dataKey"></param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<string?> SkyDbGetAsString(byte[] publicKey, string dataKey, TimeSpan? timeout = null)
+        public async Task<string?> SkyDbGetAsString(byte[] publicKey, RegistryKey dataKey, TimeSpan? timeout = null)
         {
             var result = await this.SkyDbGet(publicKey, dataKey, timeout);
             if (result == null)
@@ -190,7 +190,7 @@ namespace SiaSkynet
         /// <param name="dataKey"></param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<(byte[] file, string? contentType, SkynetFileMetadata metadata)?> SkyDbGet(byte[] publicKey, string dataKey, TimeSpan? timeout = null)
+        public async Task<(byte[] file, string? contentType, SkynetFileMetadata metadata)?> SkyDbGet(byte[] publicKey, RegistryKey dataKey, TimeSpan? timeout = null)
         {
             var regEntry = await GetRegistry(publicKey, dataKey, timeout);
 
@@ -216,7 +216,7 @@ namespace SiaSkynet
 
             SetRegistryRequest req = new SetRegistryRequest();
             req.publickey.key = publicKey.Select(x => (int)x).ToArray();
-            req.datakey = entry.GetHexKey();
+            req.datakey = entry.Key.GetHexKey();
             req.data = entry.Data.Select(x => (int)x).ToArray();
             req.revision = entry.Revision;
             req.signature = signature.Select(x => (int)x).ToArray();
@@ -233,14 +233,14 @@ namespace SiaSkynet
         /// <param name="dataKey"></param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<RegistryEntry?> GetRegistry(byte[] publicKey, string dataKey, TimeSpan? timeout = null)
+        public async Task<RegistryEntry?> GetRegistry(byte[] publicKey, RegistryKey dataKey, TimeSpan? timeout = null)
         {
             TimeSpan maxWait = timeout ?? TimeSpan.FromSeconds(2);
 
             var entry = new RegistryEntry(dataKey);
             string hexPublicKey = BitConverter.ToString(publicKey).Replace("-", "");
 
-            var getRegistryTask = _api.GetRegistry("ed25519:" + hexPublicKey, entry.GetHexKey());
+            var getRegistryTask = _api.GetRegistry("ed25519:" + hexPublicKey, entry.Key.GetHexKey());
 
 
             var completedTask = await Task.WhenAny(getRegistryTask, Task.Delay(maxWait));
@@ -272,7 +272,7 @@ namespace SiaSkynet
         /// <param name="data"></param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<bool> UpdateRegistry(byte[] privateKey, byte[] publicKey, string dataKey, string data, TimeSpan? timeout = null)
+        public async Task<bool> UpdateRegistry(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, string data, TimeSpan? timeout = null)
         {
             //Get current document
             var current = await GetRegistry(publicKey, dataKey, timeout);
