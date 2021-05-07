@@ -12,6 +12,8 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
+      - name: Build with dotnet
+        run: dotnet build SiaSkynet.sln --configuration Release
       - name: Publish Website
         run: dotnet publish SiaSkynet.Sample.Blazor -o publish/SiaSkynet.Sample.Blazor -c Release
       - name: Deploy to Skynet
