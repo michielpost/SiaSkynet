@@ -93,10 +93,11 @@ namespace SiaSkynet.Tests
         [TestMethod]
         public async Task TestSkyDbUpdate()
         {
-            RegistryKey dataKey = new RegistryKey("skydbtest");
+            RegistryKey dataKey = new RegistryKey("skydbtest-" + Guid.NewGuid());
             var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
             var success = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, "update1");
+            Assert.IsTrue(success);
             await Task.Delay(TimeSpan.FromSeconds(5));
 
             var success2 = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, "update2");

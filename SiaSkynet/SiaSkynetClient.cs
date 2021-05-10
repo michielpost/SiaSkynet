@@ -246,16 +246,23 @@ namespace SiaSkynet
             var completedTask = await Task.WhenAny(getRegistryTask, Task.Delay(maxWait));
             if (completedTask == getRegistryTask)
             {
-                var response = getRegistryTask.Result;
-                entry.Revision = response.Revision;
-                entry.Data = Utils.HexStringToByteArray(response.Data);
+                try
+                {
+                    var response = getRegistryTask.Result;
+                    entry.Revision = response.Revision;
+                    entry.Data = Utils.HexStringToByteArray(response.Data);
 
-                //TODO:     System.ArgumentException: Signature length is wrong. Got 128 instead of 64.
-                //var validationResult = await Signer.ValidateAsync(Encoding.UTF8.GetBytes(response.Signature), entry.GetFullHash(), publicKey);
-                //if (!validationResult)
-                //    return null;
+                    //TODO:     System.ArgumentException: Signature length is wrong. Got 128 instead of 64.
+                    //var validationResult = await Signer.ValidateAsync(Encoding.UTF8.GetBytes(response.Signature), entry.GetFullHash(), publicKey);
+                    //if (!validationResult)
+                    //    return null;
 
-                return entry;
+                    return entry;
+                }
+                catch(Exception ex) //Skynet portal returns a 404 when registry key is not found
+                {
+                    return null;
+                }
             }
 
             //Task cancelled due to timeout, object is not there
