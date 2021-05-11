@@ -1,5 +1,4 @@
 ﻿using MimeTypes;
-using Newtonsoft.Json;
 using RestEase;
 using SiaSkynet.Requests;
 using SiaSkynet.Responses;
@@ -10,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -309,7 +309,10 @@ namespace SiaSkynet
             if (httpResult.Headers.Contains(headerKey))
             {
                 string? metadataJson = httpResult.Headers.GetValues(headerKey).FirstOrDefault();
-                metadata = JsonConvert.DeserializeObject<SkynetFileMetadata>(metadataJson);
+                if (metadataJson != null)
+                    metadata = JsonSerializer.Deserialize<SkynetFileMetadata>(metadataJson) ?? new SkynetFileMetadata();
+                else
+                    metadata = new SkynetFileMetadata();
             }
             else
             {
