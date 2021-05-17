@@ -26,8 +26,8 @@ namespace SiaSkynet
         [Get("{skylink}")]
         Task<HttpResponseMessage> GetFileAsHttpResponseMessage([Path]string skylink);
 
-        [Head("{skylink}")]
-        Task<HttpResponseMessage> GetFileHeadersAsHttpResponseMessage([Path]string skylink);
+        [Get("skynet/metadata/{skylink}")]
+        Task<SkynetFileMetadata> GetMetadata([Path]string skylink);
 
         [Post("skynet/registry")]
         Task<HttpResponseMessage> SetRegistry([Body] SetRegistryRequest req);

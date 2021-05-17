@@ -79,7 +79,7 @@ namespace SiaSkynet
             {
                 string file = await httpResult.Content.ReadAsStringAsync();
 
-                ReadFileHeaders(httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata);
+                ReadFileHeaders(httpResult, out string? contentType, out string? fileName);
 
                 return (file, contentType, fileName);
             }
@@ -96,20 +96,15 @@ namespace SiaSkynet
             {
                 byte[] file = await httpResult.Content.ReadAsByteArrayAsync();
 
-                ReadFileHeaders(httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata);
+                ReadFileHeaders(httpResult, out string? contentType, out string? fileName);
 
                 return (file, contentType, fileName);
             }
         }
 
-        public async Task<SkynetFileMetadata> GetMetadata(string skylink)
+        public Task<SkynetFileMetadata> GetMetadata(string skylink)
         {
-            using (var httpResult = await _api.GetFileHeadersAsHttpResponseMessage(skylink))
-            {
-                ReadFileHeaders(httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata);
-
-                return metadata;
-            }
+            return _api.GetMetadata(skylink);
         }
 
         /// <summary>
@@ -310,25 +305,10 @@ namespace SiaSkynet
         /// <param name="httpResult"></param>
         /// <param name="contentType"></param>
         /// <param name="metadata"></param>
-        private static void ReadFileHeaders(HttpResponseMessage httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata)
+        private static void ReadFileHeaders(HttpResponseMessage httpResult, out string? contentType, out string? fileName)
         {
-            string headerKey = "Skynet-File-Metadata";
-
             contentType = httpResult.Content.Headers.ContentType?.MediaType;
             fileName = httpResult.Content.Headers.ContentDisposition?.FileName?.Replace("\"", string.Empty);
-
-            if (httpResult.Headers.Contains(headerKey))
-            {
-                string? metadataJson = httpResult.Headers.GetValues(headerKey).FirstOrDefault();
-                if (metadataJson != null)
-                    metadata = JsonSerializer.Deserialize<SkynetFileMetadata>(metadataJson) ?? new SkynetFileMetadata();
-                else
-                    metadata = new SkynetFileMetadata();
-            }
-            else
-            {
-                metadata = new SkynetFileMetadata();
-            }
         }
     }
 }
