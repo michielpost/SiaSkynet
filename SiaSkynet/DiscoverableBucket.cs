@@ -14,7 +14,12 @@ namespace SiaSkynet
         private readonly int Version = 1;
         private readonly byte[][] pathHashes;
 
+#if NET5_0
         public string Path { get; init; }
+#else
+        public string Path { get; set; }
+#endif
+
 
         public DiscoverableBucket(string path)
         {
