@@ -51,18 +51,27 @@ namespace SiaSkynet.Tests
             var result = await _client.DownloadFileAsStringAsync(skylink);
             Assert.AreEqual("this is a test file", result.file);
             Assert.AreEqual("text/plain", result.contentType);
-            Assert.AreEqual("test.txt", result.metadata.Filename);
+            Assert.AreEqual("test.txt", result.fileName);
         }
 
         [TestMethod]
-        public async Task DownloadFileAsByteArratAsync()
+        public async Task DownloadFileAsByteArrayAsync()
         {
             string skylink = "AAAAQZg5XQJimI9FGR73pOiC2PnflFRh03Z4azabKz6bVw";
 
             var result = await _client.DownloadFileAsByteArrayAsync(skylink);
             Assert.IsNotNull(result.file);
             Assert.AreEqual("text/plain", result.contentType);
-            Assert.AreEqual("test.txt", result.metadata.Filename);
+            Assert.AreEqual("test.txt", result.fileName);
+        }
+
+        [TestMethod]
+        public async Task GetFileMetaData()
+        {
+            string skylink = "AAAAQZg5XQJimI9FGR73pOiC2PnflFRh03Z4azabKz6bVw";
+
+            var result = await _client.GetMetadata(skylink);
+            Assert.AreEqual("test.txt", result.Filename);
         }
     }
 }

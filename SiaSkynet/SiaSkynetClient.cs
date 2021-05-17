@@ -73,15 +73,15 @@ namespace SiaSkynet
         /// </summary>
         /// <param name="skylink"></param>
         /// <returns></returns>
-        public async Task<(string file, string? contentType, SkynetFileMetadata metadata)> DownloadFileAsStringAsync(string skylink)
+        public async Task<(string file, string? contentType, string? fileName)> DownloadFileAsStringAsync(string skylink)
         {
             using (var httpResult = await _api.GetFileAsHttpResponseMessage(skylink))
             {
                 string file = await httpResult.Content.ReadAsStringAsync();
 
-                ReadFileHeaders(httpResult, out string? contentType, out SkynetFileMetadata metadata);
+                ReadFileHeaders(httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata);
 
-                return (file, contentType, metadata);
+                return (file, contentType, fileName);
             }
         }
 
@@ -90,15 +90,25 @@ namespace SiaSkynet
         /// </summary>
         /// <param name="skylink"></param>
         /// <returns></returns>
-        public async Task<(byte[] file, string? contentType, SkynetFileMetadata metadata)> DownloadFileAsByteArrayAsync(string skylink)
+        public async Task<(byte[] file, string? contentType, string? fileName)> DownloadFileAsByteArrayAsync(string skylink)
         {
             using (var httpResult = await _api.GetFileAsHttpResponseMessage(skylink))
             {
                 byte[] file = await httpResult.Content.ReadAsByteArrayAsync();
 
-                ReadFileHeaders(httpResult, out string? contentType, out SkynetFileMetadata metadata);
+                ReadFileHeaders(httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata);
 
-                return (file, contentType, metadata);
+                return (file, contentType, fileName);
+            }
+        }
+
+        public async Task<SkynetFileMetadata> GetMetadata(string skylink)
+        {
+            using (var httpResult = await _api.GetFileHeadersAsHttpResponseMessage(skylink))
+            {
+                ReadFileHeaders(httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata);
+
+                return metadata;
             }
         }
 
@@ -190,7 +200,7 @@ namespace SiaSkynet
         /// <param name="dataKey"></param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<(byte[] file, string? contentType, SkynetFileMetadata metadata)?> SkyDbGet(byte[] publicKey, RegistryKey dataKey, TimeSpan? timeout = null)
+        public async Task<(byte[] file, string? contentType, string? fileName)?> SkyDbGet(byte[] publicKey, RegistryKey dataKey, TimeSpan? timeout = null)
         {
             var regEntry = await GetRegistry(publicKey, dataKey, timeout);
 
@@ -300,11 +310,12 @@ namespace SiaSkynet
         /// <param name="httpResult"></param>
         /// <param name="contentType"></param>
         /// <param name="metadata"></param>
-        private static void ReadFileHeaders(HttpResponseMessage httpResult, out string? contentType, out SkynetFileMetadata metadata)
+        private static void ReadFileHeaders(HttpResponseMessage httpResult, out string? contentType, out string? fileName, out SkynetFileMetadata metadata)
         {
             string headerKey = "Skynet-File-Metadata";
 
             contentType = httpResult.Content.Headers.ContentType?.MediaType;
+            fileName = httpResult.Content.Headers.ContentDisposition?.FileName?.Replace("\"", string.Empty);
 
             if (httpResult.Headers.Contains(headerKey))
             {
