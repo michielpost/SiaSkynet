@@ -142,7 +142,7 @@ namespace SiaSkynet
         /// <param name="dataKey"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, string data)
+        public Task<bool> SkyDbSetAsString(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, string data)
         {
             return SkyDbSet(privateKey, publicKey, dataKey, Encoding.UTF8.GetBytes(data));
         }
@@ -154,9 +154,10 @@ namespace SiaSkynet
         /// <param name="publicKey"></param>
         /// <param name="dataKey"></param>
         /// <param name="data"></param>
+        /// <param name="revision">optional forces revision</param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, byte[] data, TimeSpan? timeout = null)
+        public async Task<bool> SkyDbSet(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, byte[] data, int? revision = null, TimeSpan? timeout = null)
         {
             using (Stream stream = new MemoryStream(data))
             {
@@ -166,7 +167,7 @@ namespace SiaSkynet
                 var link = response.Skylink;
 
                 //Save link to file in registry
-                return await UpdateRegistry(privateKey, publicKey, dataKey, link, timeout);
+                return await UpdateRegistry(privateKey, publicKey, dataKey, link, revision, timeout);
             }
         }
 
@@ -193,7 +194,7 @@ namespace SiaSkynet
         /// <param name="dataKey"></param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<(byte[] file, string? contentType, string? fileName)?> SkyDbGet(byte[] publicKey, RegistryKey dataKey, TimeSpan? timeout = null)
+        public async Task<(byte[] file, string? contentType, string? fileName, RegistryEntry? registryEntry)?> SkyDbGet(byte[] publicKey, RegistryKey dataKey, TimeSpan? timeout = null)
         {
             var regEntry = await GetRegistry(publicKey, dataKey, timeout);
 
@@ -201,7 +202,9 @@ namespace SiaSkynet
                 return null;
 
             //Get the data from the linked file
-            return await this.DownloadFileAsByteArrayAsync(regEntry.GetDataAsString());
+            var fileResult = await this.DownloadFileAsByteArrayAsync(regEntry.GetDataAsString());
+
+            return (fileResult.file, fileResult.contentType, fileResult.fileName, regEntry);
         }
 
         /// <summary>
@@ -280,16 +283,27 @@ namespace SiaSkynet
         /// <param name="publicKey"></param>
         /// <param name="dataKey"></param>
         /// <param name="data"></param>
+        /// <param name="revision">optional forced revision</param>
         /// <param name="timeout">Time you want to wait for getting a SkyDB entry</param>
         /// <returns></returns>
-        public async Task<bool> UpdateRegistry(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, string data, TimeSpan? timeout = null)
+        public async Task<bool> UpdateRegistry(byte[] privateKey, byte[] publicKey, RegistryKey dataKey, string data, int? revision = null, TimeSpan? timeout = null)
         {
             //Get current document
-            var current = await GetRegistry(publicKey, dataKey, timeout);
-            if (current == null)
-                current = new RegistryEntry(dataKey);
+            RegistryEntry? current = new RegistryEntry(dataKey);
+
+            if (!revision.HasValue)
+            {
+                current = await GetRegistry(publicKey, dataKey, timeout);
+                if (current == null)
+                    current = new RegistryEntry(dataKey);
+                else
+                    current.Revision += 1;
+            }
             else
-                current.Revision += 1;
+            {
+                //Do not get entry to save time, but set forced revision
+                current.Revision = revision.Value;
+            }
 
             current.SetData(data);
 

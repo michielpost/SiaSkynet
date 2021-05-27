@@ -148,7 +148,7 @@ client = new SiaSkynetClient(portalDomain);
     private async Task SaveData()
     {
         saving = true;
-        success = await client.SkyDbSet(privateKey, publicKey, dataKey, documentText);
+        success = await client.SkyDbSetAsString(privateKey, publicKey, dataKey, documentText);
         saving = false;
 
     }

@@ -96,11 +96,11 @@ namespace SiaSkynet.Tests
             RegistryKey dataKey = new RegistryKey("skydbtest-" + Guid.NewGuid());
             var key = SiaSkynetClient.GenerateKeys(_testSeed);
 
-            var success = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, "update1");
+            var success = await _client.SkyDbSetAsString(key.privateKey, key.publicKey, dataKey, "update1");
             Assert.IsTrue(success);
             await Task.Delay(TimeSpan.FromSeconds(5));
 
-            var success2 = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, "update2");
+            var success2 = await _client.SkyDbSetAsString(key.privateKey, key.publicKey, dataKey, "update2");
             await Task.Delay(TimeSpan.FromSeconds(5));
 
             string result = await _client.SkyDbGetAsString(key.publicKey, dataKey);
@@ -120,12 +120,33 @@ namespace SiaSkynet.Tests
             RegistryKey dataKey = new RegistryKey("datakey");
 
 
-            var success = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, newData);
+            var success = await _client.SkyDbSetAsString(key.privateKey, key.publicKey, dataKey, newData);
 
             string result = await _client.SkyDbGetAsString(key.publicKey, dataKey);
 
             Assert.IsTrue(success);
             Assert.AreEqual(newData, result);
+
+        }
+
+        [TestMethod]
+        public async Task TestForcedRevision()
+        {
+            string data = Guid.NewGuid().ToString();
+            var key = SiaSkynetClient.GenerateKeys("my private key seed");
+            RegistryKey dataKey = new RegistryKey("datakey" + Guid.NewGuid());
+            int revision = 5;
+
+            var success = await _client.SkyDbSet(key.privateKey, key.publicKey, dataKey, Encoding.UTF8.GetBytes(data), revision);
+
+            var result = await _client.SkyDbGet(key.publicKey, dataKey);
+
+            Assert.IsTrue(success);
+            Assert.AreEqual(revision, result.Value.registryEntry.Revision);
+
+
+            var stringResult = Encoding.UTF8.GetString(result.Value.file);
+            Assert.AreEqual(data, stringResult);
 
         }
 
