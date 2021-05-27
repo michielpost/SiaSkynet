@@ -65,7 +65,7 @@ Set and get values on SkyDB:
 ```cs
 var key = await SiaSkynetClient.GenerateKeys("my private key seed");
 
-var success = await _client.SkyDbSet(key.privateKey, key.publicKey, "datakey", "data");
+var success = await _client.SkyDbSetAsString(key.privateKey, key.publicKey, "datakey", "data");
 
 string result = await _client.SkyDbGetAsString(key.publicKey, "datakey");
 
