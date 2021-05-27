@@ -110,12 +110,26 @@
         base.OnInitialized();
 
 #if RELEASE
-string baseUrl = MyNavigationManager.BaseUri;
-var uri = new Uri(baseUrl);
-var portalDomain = $"{uri.Scheme}://{uri.Authority}/";
-client = new SiaSkynetClient(portalDomain);
+        string baseUrl = NavigationManager.BaseUri;
+        var uri = new Uri(baseUrl);
+        skyDocsService.SetPortalDomain(uri.Scheme, uri.Authority);
 #endif
 
+    }
+
+    public void SetPortalDomain(string scheme, string domain)
+    {
+        string[] urlParts = domain.Split('.');
+
+        //Only take last two parts
+        var lastParts = urlParts.Skip(urlParts.Count() - 2).Take(2);
+
+        if (lastParts.Count() == 2)
+        {
+            var url = $"{scheme}://{string.Join('.', lastParts)}";
+            Console.WriteLine($"Using API domain: {url}");
+            client = new SiaSkynetClient(url);
+        }
     }
 
     private void SetSeedPhraseValue(string Value)
