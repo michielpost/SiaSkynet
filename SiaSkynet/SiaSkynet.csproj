@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8625;CS8613;CS8610</WarningsAsErrors>
@@ -9,7 +9,7 @@
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Authors>Michiel Post</Authors>
-    <Version>3.3.0</Version>
+    <Version>3.4.0</Version>
     <Product>Sia Skynet Client</Product>
     <PackageProjectUrl>https://github.com/michielpost/SiaSkynet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/michielpost/SiaSkynet</RepositoryUrl>
@@ -22,6 +22,7 @@
     <PackageReference Include="Chaos.NaCl.Standard" Version="1.0.0" />
     <PackageReference Include="Isopoh.Cryptography.Blake2b" Version="1.1.10" />
     <PackageReference Include="MediaTypeMap.Core" Version="2.3.3" />
+    <PackageReference Include="RestEase" Version="1.5.5" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
