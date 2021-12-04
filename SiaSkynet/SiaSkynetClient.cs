@@ -28,6 +28,12 @@ namespace SiaSkynet
 
         }
 
+        public SiaSkynetClient(HttpClient client, string baseUrl = apiBaseUrl)
+        {
+            _api = GetApi(client, baseUrl);
+
+        }
+
         public ISiaSkynetApi GetApi(string baseUrl = apiBaseUrl)
         {
             var nbApi = new RestClient(baseUrl)
@@ -40,6 +46,14 @@ namespace SiaSkynet
                 //    Converters = new List<JsonConverter> { new StringEnumConverter() }
                 //}
             }.For<ISiaSkynetApi>();
+            return nbApi;
+        }
+
+        public ISiaSkynetApi GetApi(HttpClient client, string baseUrl = apiBaseUrl)
+        {
+            client.BaseAddress = new Uri(baseUrl);
+
+            var nbApi = new RestClient(client).For<ISiaSkynetApi>();
             return nbApi;
         }
 

@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SiaSkynet;
 using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -13,7 +14,8 @@ namespace SiaSkynet.Tests
 
         public SkyfileTests()
         {
-            _client = new SiaSkynetClient();
+            HttpClient client = new HttpClient();
+            _client = new SiaSkynetClient(client);
         }
 
         [TestMethod]
