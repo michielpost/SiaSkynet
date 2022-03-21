@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Chaos.NaCl.Standard" Version="1.0.0" />
-    <PackageReference Include="Isopoh.Cryptography.Blake2b" Version="1.1.10" />
+    <PackageReference Include="Isopoh.Cryptography.Blake2b" Version="1.1.11" />
     <PackageReference Include="MediaTypeMap.Core" Version="2.3.3" />
     <PackageReference Include="RestEase" Version="1.5.5" />
   </ItemGroup>

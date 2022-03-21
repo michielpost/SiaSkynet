@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SiaSkynet.Sample.Blazor.Pages
 {
     public partial class Index
     {
-        SiaSkynetClient client = new SiaSkynetClient();
+        SiaSkynetClient client;
 
         string seedPhrase = "";
         string documentText = "";
@@ -25,20 +26,27 @@ namespace SiaSkynet.Sample.Blazor.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; } = default!;
 
+        [Inject]
+        public IHttpClientFactory HttpClientFactory { get; set; } = default!;
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
+            var httpClient = HttpClientFactory.CreateClient("API");
+            client = new SiaSkynetClient(httpClient);
+
 #if RELEASE
             string baseUrl = NavigationManager.BaseUri;
             var uri = new Uri(baseUrl);
-            SetPortalDomain(uri.Scheme, uri.Authority);
+            SetPortalDomain(httpClient, uri.Scheme, uri.Authority);
 #endif
 
         }
 
-        public void SetPortalDomain(string scheme, string domain)
+        public void SetPortalDomain(HttpClient httpClient, string scheme, string domain)
         {
+
             string[] urlParts = domain.Split('.');
 
             //Only take last two parts
@@ -48,7 +56,7 @@ namespace SiaSkynet.Sample.Blazor.Pages
             {
                 var url = $"{scheme}://{string.Join('.', lastParts)}";
                 Console.WriteLine($"Using API domain: {url}");
-                client = new SiaSkynetClient(url);
+                client = new SiaSkynetClient(httpClient, url);
             }
         }
 
