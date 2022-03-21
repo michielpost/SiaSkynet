@@ -1,6 +1,8 @@
 name: publish to skynet
 on:
+  pull_request:
   push:
+    branches: [master]
 
 jobs:
   publish:
@@ -17,7 +19,7 @@ jobs:
       - name: Publish Website
         run: dotnet publish SiaSkynet.Sample.Blazor -o publish/SiaSkynet.Sample.Blazor -c Release
       - name: Deploy to Skynet
-        uses: kwypchlo/deploy-to-skynet-action@main
+        uses: SkynetLabs/deploy-to-skynet-action@v2
         with:
           upload-dir: publish/SiaSkynet.Sample.Blazor/wwwroot
           github-token: ${{ secrets.GITHUB_TOKEN }}

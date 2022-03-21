@@ -6,7 +6,7 @@ One of the most exciting features of this SDK is the full compatibility with [Bl
 
 Combining the large **C#** ecosystem with the power of **SkyDB** and the speed of **WebAssembly** makes this solution ready for a decentralized future!
 
-Try out the [Sample App](https://0g02v84q1ldlsqnes30veahir6r0ilunkschqoutllbfe0n1vk5de0g.siasky.net/)
+Try out the [Sample App](https://2g01e51a0vlfbhlq8oedvq2lvi482lld730jeglhtviifrjdh0aq08g.siasky.net/)
 or watch the [Video demo](https://siasky.net/AADKNi9ltyZ9yjxk3xpfrJeXBfjhpdSlUeFBCEMXa7hyaw)
 
 Also see [SkyDocs](https://github.com/michielpost/SkyDocs)
