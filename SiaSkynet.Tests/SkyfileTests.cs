@@ -14,8 +14,7 @@ namespace SiaSkynet.Tests
 
         public SkyfileTests()
         {
-            HttpClient client = new HttpClient();
-            _client = new SiaSkynetClient(client);
+            _client = new SiaSkynetClient();
         }
 
         [TestMethod]

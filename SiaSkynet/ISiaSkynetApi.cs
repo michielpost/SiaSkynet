@@ -17,6 +17,9 @@ namespace SiaSkynet
     /// </summary>
     public interface ISiaSkynetApi
     {
+        [Header("Skynet-Api-Key")]
+        public string? ApiKey { get; set; }
+
         [Post("skynet/skyfile")]
         Task<SkyfileResponse> UploadFile([Header("Content-Type")] MediaTypeHeaderValue contentType, [Query]string filename, [Body] Stream file);
 

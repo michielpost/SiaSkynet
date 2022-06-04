@@ -34,7 +34,7 @@ namespace SiaSkynet.Sample.Blazor.Pages
             base.OnInitialized();
 
             var httpClient = HttpClientFactory.CreateClient("API");
-            client = new SiaSkynetClient(httpClient);
+            client = new SiaSkynetClient(client: httpClient);
 
 #if RELEASE
             string baseUrl = NavigationManager.BaseUri;
@@ -56,7 +56,7 @@ namespace SiaSkynet.Sample.Blazor.Pages
             {
                 var url = $"{scheme}://{string.Join('.', lastParts)}";
                 Console.WriteLine($"Using API domain: {url}");
-                client = new SiaSkynetClient(httpClient, url);
+                client = new SiaSkynetClient(url, client: httpClient);
             }
         }
 

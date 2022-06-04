@@ -22,38 +22,21 @@ namespace SiaSkynet
 
         private ISiaSkynetApi _api;
 
-        public SiaSkynetClient(string baseUrl = apiBaseUrl)
+        public SiaSkynetClient(string baseUrl = apiBaseUrl, string? apiKey = null, HttpClient? client = null)
         {
-            _api = GetApi(baseUrl);
+            if (client == null)
+                client = new HttpClient();
+
+            _api = GetApi(client, baseUrl, apiKey);
 
         }
-
-        public SiaSkynetClient(HttpClient client, string baseUrl = apiBaseUrl)
-        {
-            _api = GetApi(client, baseUrl);
-
-        }
-
-        public ISiaSkynetApi GetApi(string baseUrl = apiBaseUrl)
-        {
-            var nbApi = new RestClient(baseUrl)
-            {
-
-                //JsonSerializerSettings = new JsonSerializerSettings()
-                //{
-                //    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                //    NullValueHandling = NullValueHandling.Ignore,
-                //    Converters = new List<JsonConverter> { new StringEnumConverter() }
-                //}
-            }.For<ISiaSkynetApi>();
-            return nbApi;
-        }
-
-        public ISiaSkynetApi GetApi(HttpClient client, string baseUrl = apiBaseUrl)
+        public ISiaSkynetApi GetApi(HttpClient client, string baseUrl = apiBaseUrl, string? apiKey = null)
         {
             client.BaseAddress = new Uri(baseUrl);
 
             var nbApi = new RestClient(client).For<ISiaSkynetApi>();
+            nbApi.ApiKey = apiKey;
+
             return nbApi;
         }
 
