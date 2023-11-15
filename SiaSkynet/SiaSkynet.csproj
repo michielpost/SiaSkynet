@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net8.0;net7.0;netstandard2.1</TargetFrameworks>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8625;CS8613;CS8610</WarningsAsErrors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -19,9 +19,9 @@
 
   <ItemGroup>
     <PackageReference Include="Chaos.NaCl.Standard" Version="1.0.0" />
-    <PackageReference Include="Isopoh.Cryptography.Blake2b" Version="1.1.12" />
+    <PackageReference Include="Isopoh.Cryptography.Blake2b" Version="2.0.0" />
     <PackageReference Include="MediaTypeMap.Core" Version="2.3.3" />
-	<PackageReference Include="RestEase" Version="1.6.0" />
+	<PackageReference Include="RestEase" Version="1.6.4" />
   </ItemGroup>
 
 </Project>
